@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 const _DEFAULT_SIZE = 32;
 
@@ -11,7 +10,9 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   ///
   /// The arguments must not be null.
   const BlurHashImage(this.blurHash,
-      {this.decodingWidth = _DEFAULT_SIZE, this.decodingHeight = _DEFAULT_SIZE, this.scale = 1.0});
+      {this.decodingWidth = _DEFAULT_SIZE,
+      this.decodingHeight = _DEFAULT_SIZE,
+      this.scale = 1.0});
 
   /// The bytes to decode into an image.
   final String blurHash;
@@ -26,26 +27,15 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   final int decodingHeight;
 
   @override
-  Future<BlurHashImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<BlurHashImage>(this);
-
-  @override
-  ImageStreamCompleter load(BlurHashImage key, DecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
-
-  Future<ImageInfo> _loadAsync(BlurHashImage key) async {
-    assert(key == this);
-
-    final image = await blurHashDecodeImage(
-      blurHash: blurHash,
-      width: decodingWidth,
-      height: decodingHeight,
-    );
-    return ImageInfo(image: image, scale: key.scale);
-  }
+  Future<BlurHashImage> obtainKey(ImageConfiguration configuration) =>
+      SynchronousFuture<BlurHashImage>(this);
 
   @override
   bool operator ==(Object other) => other.runtimeType != runtimeType
       ? false
-      : other is BlurHashImage && other.blurHash == blurHash && other.scale == scale;
+      : other is BlurHashImage &&
+          other.blurHash == blurHash &&
+          other.scale == scale;
 
   @override
   int get hashCode => hashValues(blurHash.hashCode, scale);
